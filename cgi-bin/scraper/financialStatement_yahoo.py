@@ -23,6 +23,8 @@ soup = BeautifulSoup(text, "lxml")
 
 error = soup.find(attrs={"id" : "lookup-page"})
 
+table = None
+
 if(not error):
     header = soup.find(attrs={"data-test" : "quote-header"})
     name = header.find_all(recursive=False)[1].find_all(recursive=False)[0].find("h1").text
@@ -33,7 +35,7 @@ if(not error):
 
     # print section
 
-    table = soup.find("table")
+    table = section.find("table")
 
     # print table
 
