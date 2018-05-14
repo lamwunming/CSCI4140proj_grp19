@@ -1,13 +1,14 @@
 #! /usr/bin/env python
 import numpy as np
 import matplotlib.pyplot as plt, mpld3
-# import cgi
-# import cgitb
-# cgitb.enable()
-#
-# form = cgi.FieldStorage()
-# code1 = Storages.sessionStorage.get("code")
-# code2 = Storages.sessionStorage.get("secondeCode")
+import cgi
+import cgitb
+cgitb.enable()
+from CSCI4140 import grabnpred
+
+form = cgi.FieldStorage()
+code1 = form.getvalue("code")
+code2 = form.getvalue("secondCode")
 
 N = 4
 ind = np.arange(N)  # the x locations for the groups
@@ -18,12 +19,14 @@ ax = fig.add_subplot(111)
 
 # 0700.HK : [array([0.83, 0.12]), array([0.85, 0.15]), array([0.88, 0.12]), array([0.98, 0.02])]
 # 0939.HK : [array([0.77, 0.23]), array([0.84, 0.16]), array([0.82, 0.18]), array([0.74, 0.26])]
-code1 = "0700.HK"
-code2 = "0939.HK"
+# code1 = "0700.HK"
+# code2 = "0939.HK"
 
-yvals = [0.12, 0.15, 0.12, 0.02]
+# yvals = [0.12, 0.15, 0.12, 0.02]
+yvals = grabnpred(code1)
 rects1 = ax.bar(ind+width*0.5, yvals, width, color='r')
-kvals = [0.23, 0.16, 0.18, 0.26]
+# kvals = [0.23, 0.16, 0.18, 0.26]
+kvals = grabnpred(code2)
 rects3 = ax.bar(ind+width*1.5, kvals, width, color='b')
 
 
