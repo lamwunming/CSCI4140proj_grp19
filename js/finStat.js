@@ -6,6 +6,6 @@ search.addEventListener("click", function(){
       code = "AAPL";
     }
     var show = document.getElementById("show").value;
-    var url = "cgi-bin/scraper/financialStatement_yahoo.py?code=" + code + "&show=" + show;
+    var url = "/cgi-bin/scraper/financialStatement_yahoo.py?code=" + code + "&show=" + show;
     window.open(url);
 });
