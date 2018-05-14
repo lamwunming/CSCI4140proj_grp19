@@ -19,8 +19,20 @@
       var analy = document.getElementById('analysis');
       var compa = document.getElementById('compare');
       var repor = document.getElementById('report');
-      
+
       var dive = document.getElementById(id);
+      if(dive.id!='dashboard'){
+        document.getElementById('show').style.display = 'none';
+      }
+      else{
+        document.getElementById('show').style.display = 'block';
+      }
+      if(dive.id!='compare'){
+        document.getElementById('secondCode').style.display = 'none';
+      }
+      else{
+        document.getElementById('secondCode').style.display = 'block';
+      }
 
       dashb.style.display = 'none';
       mysav.style.display = 'none';
@@ -45,7 +57,7 @@
             }
         ?>
         </div>
-        
+
 
         <ul class="navbar-nav px-3">
           <li class="nav-item text-nowrap">
@@ -53,7 +65,7 @@
           </li>
         </ul>
       </nav>
-  
+
       <div class="container-fluid">
         <div class="row">
           <nav class="col-md-2 d-none d-md-block bg-light sidebar">
@@ -62,7 +74,7 @@
                 <li class="nav-item">
                   <a class="nav-link" href="#" onclick="showandhide('dashboard')">
                     <span data-feather="home"></span>
-                    Dashboard 
+                    Dashboard
                   </a>
                 </li>
                 <li class="nav-item">
@@ -86,20 +98,25 @@
                   </a>
                 </li>
               </ul>
-  
-              
+
+
             </div>
           </nav>
-          
-  
+
+
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div>
-              <form method="POST" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <input class="form-control" type="text" placeholder="Search (Stock number)" aria-label="Search" name="searchtarget">
-                <button class="btn btn-primary" type="submit" name="search">Search</button>
-                <button class="btn btn-primary" type="submit" name="save" formaction="savecompany.php">Save to my lists</button>
-              </form>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+              <input class="form-control" id="code" type="text" placeholder="Search (Stock number)" aria-label="Search">
+              <select class="form-control" id="show" name="show">
+                <option value="financials" selected="selected">Income Statement</option>
+                <option value="balance-sheet">Balance Sheet</option>
+                <option value="cash-flow">Cash Flow</option>
+              </select>
+              <input class="form-control" id="secondCode" style="display:none" type="text" placeholder="Search (Second Stock number)" aria-label="Search">
+              <button type="button" class="btn btn-primary" id="search">Search</button>
+              <button type="button" class="btn btn-primary">Save to my lists</button>
             </div>
+            <script src="/js/finStat.js"></script>
             <!-- div session begin in here -->
             <div id="dashboard">
                   <h3>Dashboard</h3>
@@ -131,8 +148,8 @@
         </div>
       </div>
 
-      
 
-    
+
+
   </body>
 </html>
