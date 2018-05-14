@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2018 at 02:52 PM
+-- Generation Time: May 14, 2018 at 02:35 PM
 -- Server version: 10.1.31-MariaDB
 -- PHP Version: 7.2.4
 
@@ -21,6 +21,26 @@ SET time_zone = "+00:00";
 --
 -- Database: `4140`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `savecompany`
+--
+
+CREATE TABLE `savecompany` (
+  `ID` int(11) NOT NULL,
+  `COMNUM` int(6) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `savecompany`
+--
+
+INSERT INTO `savecompany` (`ID`, `COMNUM`) VALUES
+(3, 1234),
+(3, 2345),
+(3, 5432);
 
 -- --------------------------------------------------------
 
@@ -49,6 +69,12 @@ INSERT INTO `user` (`ID`, `FIRST`, `LAST`, `UID`, `PASSWORD`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `savecompany`
+--
+ALTER TABLE `savecompany`
+  ADD PRIMARY KEY (`ID`,`COMNUM`);
 
 --
 -- Indexes for table `user`

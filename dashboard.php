@@ -1,5 +1,5 @@
 <?php
-    session_start();
+    include 'dbh.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -11,6 +11,27 @@
     <link rel="stylesheet" href="css\dashboard.css">
     <script src="js\script.js"></script>
     <title>Dashboard</title>
+    <script>
+
+    function showandhide(id) {
+      var dashb = document.getElementById('dashboard');
+      var mysav = document.getElementById('mysave');
+      var analy = document.getElementById('analysis');
+      var compa = document.getElementById('compare');
+      var repor = document.getElementById('report');
+      
+      var dive = document.getElementById(id);
+
+      dashb.style.display = 'none';
+      mysav.style.display = 'none';
+      analy.style.display = 'none';
+      compa.style.display = 'none';
+      repor.style.display = 'none';
+      dive.style.display = 'block';
+    }
+
+    </script>
+
   </head>
   <body>
     <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -39,33 +60,29 @@
             <div class="sidebar-sticky">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link active" href="#">
+                  <a class="nav-link" href="#" onclick="showandhide('dashboard')">
                     <span data-feather="home"></span>
-                    Dashboard <span class="sr-only">(current)</span>
+                    Dashboard 
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="file"></span>
+                  <a class="nav-link" href="#" onclick="showandhide('mysave')">
                     My saved companies
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="shopping-cart"></span>
+                  <a class="nav-link" href="#" onclick="showandhide('analysis')">
                     Analysis
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="users"></span>
+                  <a class="nav-link" href="#" onclick="showandhide('compare')">
                     Compare
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Reports
+                  <a class="nav-link" href="#" onclick="showandhide('report')">
+                    Report
                   </a>
                 </li>
               </ul>
@@ -73,19 +90,48 @@
               
             </div>
           </nav>
+          
   
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-              <input class="form-control" type="text" placeholder="Search (Stock number)" aria-label="Search">
-              <button type="button" class="btn btn-primary">Search</button>
-              <button type="button" class="btn btn-primary">Save to my lists</button>
+            <div>
+              <form method="POST" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <input class="form-control" type="text" placeholder="Search (Stock number)" aria-label="Search" name="searchtarget">
+                <button class="btn btn-primary" type="submit" name="search">Search</button>
+                <button class="btn btn-primary" type="submit" name="save" formaction="savecompany.php">Save to my lists</button>
+              </form>
             </div>
-  
-            <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-  
+            <!-- div session begin in here -->
+            <div id="dashboard">
+                  <h3>Dashboard</h3>
+            </div>
+            <div id="mysave" style="display: none;">
+                  <h3>My saved companies</h3>
+                  <?php
+                    $uid = $_SESSION['ID'];
+                    $sql = "SELECT COMNUM FROM savecompany WHERE ID = $uid;";
+                    $result = $conn->query($sql);
+                    while($row = mysqli_fetch_assoc($result)){
+                      echo '<div class="alert alert-primary" role="alert">';
+                      echo 'Company stock number: ';
+                      echo $row['COMNUM'].'<br/>';
+                      echo '</div>';
+                    }
+                  ?>
+            </div>
+            <div id="analysis" style="display: none;">
+                  <h3>Analysis</h3>
+            </div>
+            <div id="compare" style="display: none;">
+                  <h3>Compare</h3>
+            </div>
+            <div id="report" style="display: none;">
+                  <h3>Report</h3>
+            </div>
           </main>
         </div>
       </div>
+
+      
 
     
   </body>
