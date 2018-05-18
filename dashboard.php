@@ -72,29 +72,19 @@
             <div class="sidebar-sticky">
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a class="nav-link" href="#" onclick="showandhide('dashboard')">
+                  <a class="nav-link" id="dashclick" href="#" onclick="showandhide('dashboard')">
                     <span data-feather="home"></span>
                     Dashboard
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#" onclick="showandhide('mysave')">
+                  <a class="nav-link" id="saveclick" href="#" onclick="showandhide('mysave')">
                     My saved companies
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#" onclick="showandhide('analysis')">
+                  <a class="nav-link" id="analysisclick" href="#" onclick="showandhide('analysis')">
                     Analysis
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#" onclick="showandhide('compare')">
-                    Compare
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#" onclick="showandhide('report')">
-                    Report
                   </a>
                 </li>
               </ul>
@@ -105,21 +95,23 @@
 
 
           <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-              <input class="form-control" id="code" type="text" placeholder="Search (Stock number)" aria-label="Search">
-              <select class="form-control" id="show" name="show">
-                <option value="financials" selected="selected">Income Statement</option>
-                <option value="balance-sheet">Balance Sheet</option>
-                <option value="cash-flow">Cash Flow</option>
-              </select>
-              <input class="form-control" id="secondCode" style="display:none" type="text" placeholder="Search (Second Stock number)" aria-label="Search">
-              <button type="button" class="btn btn-primary" id="search">Search</button>
-              <button type="button" class="btn btn-primary">Save to my lists</button>
+            <div>
+              <form method="POST" class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <input class="form-control" id="codesearch" type="text" placeholder="Search (Stock number)" aria-label="Search" name="searchtarget">
+                <select class="form-control" id="show" name="show">
+                  <option value="financials" selected="selected">Income Statement</option>
+                  <option value="balance-sheet">Balance Sheet</option>
+                  <option value="cash-flow">Cash Flow</option>
+                </select>
+                <input class="form-control" id="secondCode" style="display:none" type="text" placeholder="Search (Second Stock number)" aria-label="Search">
+                <button type="button" class="btn btn-primary" id="search">Search</button>
+                <button class="btn btn-primary" type="submit" name="save" formaction="savecompany.php">Save to my lists</button>
+              </form> 
             </div>
-            <script src="/js/finStat.js"></script>
             <!-- div session begin in here -->
             <div id="dashboard">
                   <h3>Dashboard</h3>
+                  <img src="waiting.gif" id="waiting" style="display: none">
             </div>
             <div id="mysave" style="display: none;">
                   <h3>My saved companies</h3>
@@ -137,13 +129,122 @@
             </div>
             <div id="analysis" style="display: none;">
                   <h3>Analysis</h3>
+                  <img src="waiting.gif" id="waiting2" style="display: none">
             </div>
-            <div id="compare" style="display: none;">
-                  <h3>Compare</h3>
-            </div>
-            <div id="report" style="display: none;">
-                  <h3>Report</h3>
-            </div>
+            <script>
+              $(document).ready(function(){
+                $("#dashclick").click(function(){
+                    document.getElementById("dashboard").setAttribute("style","display: block");
+                    document.getElementById("analysis").setAttribute("style","display: none");
+                    document.getElementById("mysave").setAttribute("style","display: none");
+                });
+              });
+
+              $(document).ready(function(){
+                $("#saveclick").click(function(){
+                    document.getElementById("dashboard").setAttribute("style","display: none");
+                    document.getElementById("analysis").setAttribute("style","display: none");
+                    document.getElementById("mysave").setAttribute("style","display: block");
+                });
+              });
+
+              $(document).ready(function(){
+                $("#search").click(function(){
+                  if ($("#codesearch")[0].value.trim() != "") {
+                  document.getElementById("waiting").setAttribute("style","display: block");
+                  document.getElementById("dashboard").setAttribute("style","display: block");
+                  document.getElementById("analysis").setAttribute("style","display: none");
+                  var com = $("#codesearch")[0].value.trim();
+                  var num_ = com.toString();
+                  objdata = {
+                    company: num_,
+                    show: $('#show').val(),
+                  }
+                  if (document.getElementById('fT') != null){
+                           document.getElementById('fT').parentNode.removeChild(document.getElementById('fT'));
+                           document.getElementById('sT').parentNode.removeChild(document.getElementById('sT'));
+                  }
+                  $.ajax({
+                    type: 'POST',
+                    data: objdata,
+                    url: 'grab.php',
+                    success: function(data) {
+                        // alert(data);
+                        document.getElementById("waiting").setAttribute("style","display: none");
+                        data = eval(data);
+                        var firstTable = "<div id='fT'><table><thead><tr>";
+                        var _th0 = "<th>Searched Code:<br>" + data[0][0] + "</th>";
+                        var _th1 = "<th>Searched Statement:<br>" + data[0][1] + "</th>";
+                        var _th2 = "<th>" + data[0][2] + "</th>";
+                        var _th3 = "<th>" + data[0][3] + "</th>";
+                        firstTable = firstTable + _th0 + _th1 + _th2 + _th3;
+                        firstTable = firstTable + "</tr></thead></table></div>";
+
+                        var secondTable = "<div id='sT'><table>";
+                        // console.log(data.length);
+                        for(i=1; i<data.length; i++){
+                          if(i==1){
+                            var row = "<thead><tr>";
+                            for(j=0; j<data[i].length; j++){
+                              row = row + "<th>" + data[i][j] + "</th>";
+                            }
+                            row = row + "</tr></thead>";
+                            secondTable = secondTable + row;
+                          }
+                          else{
+                            secondTable = secondTable + "<tbody>";
+                            var row;
+                            if(data[i].length>1){
+                              row = "<tr>";
+                            }
+                            else{
+                              row = "<tr colspan='4' style='text-align: center;'>";
+                            }
+                            for(j=0; j<data[i].length; j++){
+                              row = row + "<td>" + data[i][j] + "</td>";
+                            }
+                            row = row + "</tr>";
+                            secondTable = secondTable + row;
+                          }
+                        }
+                        secondTable = secondTable + "</tbody>";
+                        secondTable = secondTable + "</table></div>";
+
+                        $( "#dashboard" ).append( firstTable );
+                        $( "#dashboard" ).append( secondTable );
+                      }
+                    });
+                  }
+                  else {}
+                });
+
+                $("#analysisclick").click(function(){
+                  if ($("#codesearch")[0].value.trim() != "") {
+                  document.getElementById("analysis").setAttribute("style","display: block");
+                  document.getElementById("waiting2").setAttribute("style","display: block");
+                  var num = $("#codesearch")[0].value.trim();
+                  var n = num.toString();
+                  var objdata_an = {"stockcode": n};
+                  if (document.getElementById('anfig') != null){
+                           document.getElementById('anfig').parentNode.removeChild(document.getElementById('anfig'));
+                  }
+                  $.ajax({
+                    type: 'POST',
+                    data: objdata_an,
+                    url: 'draw.php',
+                    success: function(data) {
+                              var img = document.createElement("img");
+                              img.src = data;
+                              img.id = "anfig";
+                              document.getElementById("analysis").appendChild(img);
+                              document.getElementById("waiting2").setAttribute("style","display: none");
+                            }
+                        });
+                      }
+                   else {}
+                    });
+              });
+            </script>
           </main>
         </div>
       </div>
